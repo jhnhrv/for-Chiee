@@ -110,6 +110,7 @@
             cursor: pointer;
             overflow-y: auto;
             padding: 40px 0;
+            scroll-behavior: smooth; /* Smooth auto-scrolling */
         }
 
         .popup-content {
@@ -129,12 +130,11 @@
             max-width: 90%;
         }
 
-        /* GIF unclickable and unselectable settings */
         .popup-img, .cat-gif {
             user-select: none;
             -webkit-user-drag: none;
             -webkit-touch-callout: none;
-            pointer-events: none; /* This makes the click pass "through" to the background */
+            pointer-events: none;
         }
 
         .popup-img {
@@ -216,7 +216,6 @@
 </audio>
 
 <script>
-    // Create floating hearts
     const heartColors = ["💜", "💖", "🤍", "🌸"];
     for (let i = 0; i < 15; i++) {
         let heart = document.createElement("div");
@@ -230,9 +229,24 @@
 
     const validItems = {
         kuromi: ["https://i.pinimg.com/originals/52/d8/d7/52d8d7d7dd20b858e02fd818ba06c53b.gif", "https://giffiles.alphacoders.com/221/221037.gif"],
-        nailong: ["https://media.tenor.com/dTKquAPxUhYAAAAM/nailong.gif", "https://media.tenor.com/aqQM4YJbKJUAAAAM/nailong.gif", "https://media.tenor.com/0QE1d0u5KckAAAAe/nailong.png", "https://tenor.com/en-GB/view/baongoc-dtbncuti-gif-17297084271313304594"],
-        flowers: ["https://media.tenor.com/B80MQLJXvpsAAAAM/gavin-meme.gif", "https://media.tenor.com/cD0nmqrTbVcAAAAM/flowers-roses.gif", "https://media.tenor.com/2yp3vWMSFk4AAAAM/lol-funny.gif", "https://media3.giphy.com/media/l0NwuvFERvrjszjd6/giphy.gif"],
-        flower: ["https://media.tenor.com/B80MQLJXvpsAAAAM/gavin-meme.gif", "https://media.tenor.com/cD0nmqrTbVcAAAAM/flowers-roses.gif", "https://media.tenor.com/NhCg6elBdSkAAAAM/aww-yeah.gif", "https://media3.giphy.com/media/l0NwuvFERvrjszjd6/giphy.gif"]
+        nailong: [
+            "https://media.tenor.com/dTKquAPxUhYAAAAM/nailong.gif", 
+            "https://media.tenor.com/aqQM4YJbKJUAAAAM/nailong.gif", 
+            "https://media.tenor.com/0QE1d0u5KckAAAAe/nailong.png", 
+            "https://media.tenor.com/r79L6iG56mAAAAAM/nailong-dance.gif"
+        ],
+        flowers: [
+            "https://media.tenor.com/B80MQLJXvpsAAAAM/gavin-meme.gif", 
+            "https://media.tenor.com/cD0nmqrTbVcAAAAM/flowers-roses.gif", 
+            "https://media.tenor.com/2yp3vWMSFk4AAAAM/lol-funny.gif", 
+            "https://media.giphy.com/media/l0NwuvFERvrjszjd6/giphy.gif"
+        ],
+        flower: [
+            "https://media.tenor.com/B80MQLJXvpsAAAAM/gavin-meme.gif", 
+            "https://media.tenor.com/cD0nmqrTbVcAAAAM/flowers-roses.gif", 
+            "https://media.tenor.com/NhCg6elBdSkAAAAM/aww-yeah.gif", 
+            "https://media.giphy.com/media/l0NwuvFERvrjszjd6/giphy.gif"
+        ]
     };
 
     const extraTexts = ["and this!", "and thiss!!", "and thisssss!!", "and even this!!!", "can't forget this! 💜"];
@@ -264,6 +278,8 @@
     function addMoreGifs() {
         const container = document.getElementById("imageContainer");
         const title = document.getElementById("popupTitle");
+        const overlay = document.getElementById("popupOverlay");
+        
         const allKeys = Object.keys(validItems);
         const randomKey = randomFromArray(allKeys);
         const randomGif = randomFromArray(validItems[randomKey]);
@@ -279,7 +295,16 @@
         } else {
             title.innerHTML += "!";
         }
+        
         confettiExplosion();
+
+        // AUTO-SCROLL LOGIC: Wait a tiny bit for the image to start rendering, then scroll
+        setTimeout(() => {
+            overlay.scrollTo({
+                top: overlay.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 100);
     }
 
     function searchItem() {
@@ -288,7 +313,6 @@
         
         music.muted = false;
         music.play().catch(e => console.log("Music play blocked:", e));
-        
         volHint.style.opacity = "0";
 
         let input = document.getElementById("searchBox").value.toLowerCase().trim();
@@ -324,4 +348,3 @@
 </script>
 </body>
 </html>
-
