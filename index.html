@@ -72,6 +72,28 @@
             margin-top: 20px;
         }
 
+        .volume-hint {
+            font-size: 0.85rem;
+            color: #ab47bc;
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .speaker-icon {
+            display: inline-block;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+
         #popupOverlay {
             display: none;
             position: fixed;
@@ -90,6 +112,14 @@
             padding: 40px 0;
         }
 
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            text-align: center;
+        }
+
         #imageContainer {
             display: flex;
             flex-wrap: wrap;
@@ -97,6 +127,14 @@
             gap: 15px;
             padding: 20px;
             max-width: 90%;
+        }
+
+        /* GIF unclickable and unselectable settings */
+        .popup-img, .cat-gif {
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            pointer-events: none; /* This makes the click pass "through" to the background */
         }
 
         .popup-img {
@@ -122,7 +160,12 @@
             cursor: pointer;
             font-weight: bold;
             z-index: 1001;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            padding: 0;
+            line-height: 1;
         }
 
         @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -149,7 +192,7 @@
     <div class="popup-content">
         <h2 id="popupTitle" style="color: #6a1b9a; margin-bottom: 20px; text-align: center; padding: 0 20px;"></h2>
         <div id="imageContainer"></div>
-        <p style="color: #ab47bc; font-weight: bold; margin-top: 20px;">(Click anywhere for more! 💜)</p>
+        <p style="color: #ab47bc; font-weight: bold; margin-top: 20px; width: 100%; text-align: center; user-select: none;">(Click for more! 💜)</p>
     </div>
 </div>
 
@@ -159,12 +202,17 @@
     <img class="cat-gif" src="https://media.tenor.com/_AmxVYOxcoAAAAAM/gift-gifts.gif" alt="cat">
     <p>What do you want for Valentine's? 🥰</p>
     <input type="text" id="searchBox" placeholder="Type here...">
+    
+    <div class="volume-hint" id="volHint">
+        <span class="speaker-icon">🔊</span> Turn up your volume!
+    </div>
+    
     <br>
     <button onclick="searchItem()">Enter</button>
 </div>
 
 <audio id="bgMusic" loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    <source src="geoffharvey-fat-cat-374614.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -216,7 +264,6 @@
     function addMoreGifs() {
         const container = document.getElementById("imageContainer");
         const title = document.getElementById("popupTitle");
-        
         const allKeys = Object.keys(validItems);
         const randomKey = randomFromArray(allKeys);
         const randomGif = randomFromArray(validItems[randomKey]);
@@ -227,7 +274,6 @@
         container.appendChild(newImg);
 
         title.innerHTML = extraTexts[textIndex];
-        
         if (textIndex < extraTexts.length - 1) {
             textIndex++;
         } else {
@@ -237,9 +283,13 @@
     }
 
     function searchItem() {
-        // Play music on first interaction (browser requirement)
         const music = document.getElementById("bgMusic");
-        music.play().catch(() => {});
+        const volHint = document.getElementById("volHint");
+        
+        music.muted = false;
+        music.play().catch(e => console.log("Music play blocked:", e));
+        
+        volHint.style.opacity = "0";
 
         let input = document.getElementById("searchBox").value.toLowerCase().trim();
         let container = document.getElementById("imageContainer");
@@ -264,7 +314,7 @@
         container.appendChild(img);
 
         document.getElementById("popupOverlay").style.display = "flex";
-        document.getElementById("closeBtn").style.display = "block";
+        document.getElementById("closeBtn").style.display = "flex";
         confettiExplosion();
     }
 
@@ -273,5 +323,4 @@
     });
 </script>
 </body>
-
 </html>
